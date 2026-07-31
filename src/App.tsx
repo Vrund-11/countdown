@@ -135,10 +135,10 @@ function App() {
       ref={containerRef} 
       className="relative min-h-screen bg-[#0B0B0F] text-white flex flex-col justify-between overflow-x-hidden font-body selection:bg-purple-500/30 selection:text-purple-200 pt-24 lg:pt-28 2xl:pt-32"
     >
-      {/* Background Top & Side Purple Atmospheric Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90vw] max-w-[1000px] h-[500px] bg-gradient-to-b from-purple-900/25 via-indigo-950/15 to-transparent blur-[120px] pointer-events-none z-0" />
-      <div className="absolute top-20 left-1/4 w-[40vw] max-w-[350px] h-[350px] bg-purple-600/10 blur-[100px] pointer-events-none z-0" />
-      <div className="absolute top-20 right-1/4 w-[40vw] max-w-[350px] h-[350px] bg-indigo-600/10 blur-[100px] pointer-events-none z-0" />
+      {/* Background Saffron (Left), Purple (Center) & Emerald (Right) Ambient Glows */}
+      <div className="fixed top-0 left-0 w-[55vw] max-w-[700px] h-[55vw] max-h-[700px] bg-gradient-to-br from-orange-500/18 via-amber-600/08 to-transparent rounded-full blur-[130px] pointer-events-none z-0 -translate-x-1/4 -translate-y-1/4" />
+      <div className="fixed top-0 right-0 w-[50vw] max-w-[650px] h-[50vw] max-h-[650px] bg-gradient-to-bl from-emerald-500/16 via-green-700/08 to-transparent rounded-full blur-[130px] pointer-events-none z-0 translate-x-1/4 -translate-y-1/4" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[80vw] max-w-[1000px] h-[450px] bg-gradient-to-b from-purple-900/25 via-indigo-950/12 to-transparent blur-[130px] pointer-events-none z-0" />
 
       {/* ========================================================================= */}
       {/* HUBBL NAVBAR (Logo Left)                                                  */}
