@@ -1,17 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { 
-  Calendar, 
   Users, 
   Mic, 
-  ArrowRight, 
+  User, 
   Linkedin, 
-  Instagram,
-  Sparkles, 
+  Instagram, 
   Heart
 } from 'lucide-react';
 import gsap from 'gsap';
 
-// Exact X (formerly Twitter) Icon from Community-Hub-Project SocialMediaDock
+// Twitter / X Icon from Hubbl SocialMediaDock
 const XIcon = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 24 24"
@@ -23,51 +21,77 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Exact Social Media Dock Component from Hubbl Repo
+const SocialMediaDock = () => (
+  <div className="flex items-center gap-3 sm:gap-4">
+    {/* LinkedIn */}
+    <a
+      href="https://www.linkedin.com/company/hubblcommunity"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Hubbl on LinkedIn"
+      className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/15 hover:shadow-[0_0_20px_rgba(10,102,194,0.35)]"
+    >
+      <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-[#0A66C2] group-hover:scale-110 transition-all duration-500 ease-in-out" />
+    </a>
+
+    {/* X (Formerly Twitter) */}
+    <a
+      href="https://x.com/hubblcommunity"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Hubbl on X"
+      className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-white/50 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+    >
+      <XIcon className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-white group-hover:scale-110 transition-all duration-500 ease-in-out" />
+    </a>
+
+    {/* Instagram */}
+    <a
+      href="https://instagram.com/hubblcommunity"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Hubbl on Instagram"
+      className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-pink-500/60 hover:bg-gradient-to-tr hover:from-[#f09433]/20 hover:via-[#dc2743]/20 hover:to-[#bc1888]/20 hover:shadow-[0_0_20px_rgba(225,48,108,0.35)]"
+    >
+      <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-[#E1306C] group-hover:scale-110 transition-all duration-500 ease-in-out" />
+    </a>
+  </div>
+);
+
 function App() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // Target Launch Date: August 15, 2026 at Midnight IST (00:00:00 GMT+5:30)
-  const targetDate = new Date('2026-08-15T00:00:00+05:30').getTime();
-
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  });
-
-  const [isLaunched, setIsLaunched] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // 1. Countdown logic
+  // Target Launch Date: August 15, 2026 Midnight IST (00:00:00 GMT+5:30)
+  const targetDate = useRef(new Date('2026-08-15T00:00:00+05:30').getTime()).current;
+
+  const getTimeRemaining = (target: number) => {
+    const difference = target - Date.now();
+    if (difference <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+    return {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+      seconds: Math.floor((difference % (1000 * 60)) / 1000)
+    };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(() => getTimeRemaining(targetDate));
+
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const now = Date.now();
-      const difference = targetDate - now;
-
-      if (difference <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        setIsLaunched(true);
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      setTimeLeft({ days, hours, minutes, seconds });
-      setIsLaunched(false);
+      setTimeLeft(getTimeRemaining(targetDate));
     };
 
     calculateTimeLeft();
     const interval = setInterval(calculateTimeLeft, 1000);
-
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  // 2. Scroll listener for Navbar
+  // Scroll listener for Navbar
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
@@ -76,130 +100,17 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 3. Interactive Canvas Particles (Hubbl Network Visuals)
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      alpha: number;
-    }> = [];
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initParticles();
-    };
-
-    const initParticles = () => {
-      const density = Math.min(Math.floor(window.innerWidth / 15), 100);
-      particles = [];
-      for (let i = 0; i < density; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          radius: Math.random() * 2.5 + 1,
-          alpha: Math.random() * 0.5 + 0.1
-        });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((p, idx) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 118, 79, ${p.alpha})`;
-        ctx.fill();
-
-        for (let j = idx + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 130) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            const lineAlpha = (1 - dist / 130) * 0.08;
-            ctx.strokeStyle = `rgba(110, 43, 136, ${lineAlpha})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      });
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
-  // 4. GSAP Entrance Animations
+  // Instant non-blocking entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-      tl.from('.anim-header', {
-        y: -30,
+      gsap.from('.anim-header, .anim-badge, .anim-title, .anim-dot, .anim-subtitle, .anim-card, .anim-tagline, .anim-divider, .anim-features, .anim-arc, .anim-callout, .anim-footer', {
+        y: 12,
         opacity: 0,
-        duration: 0.8
-      })
-      .from('.anim-badge', {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.6
-      }, '-=0.4')
-      .from('.anim-title', {
-        y: 20,
-        opacity: 0,
-        duration: 0.8
-      }, '-=0.4')
-      .from('.anim-desc', {
-        y: 15,
-        opacity: 0,
-        duration: 0.6
-      }, '-=0.4')
-      .from('.anim-card', {
-        y: 30,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.8
-      }, '-=0.4')
-      .from('.anim-socials', {
-        scale: 0.9,
-        opacity: 0,
-        duration: 0.6
-      }, '-=0.3')
-      .from('.anim-features', {
-        y: 40,
-        opacity: 0,
-        duration: 0.8
-      }, '-=0.2');
+        duration: 0.4,
+        stagger: 0.03,
+        ease: 'power2.out',
+        clearProps: 'all'
+      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -210,192 +121,252 @@ function App() {
   };
 
   return (
-    <div ref={containerRef} className="relative min-h-screen text-white flex flex-col z-10 pt-28 2xl:pt-40 3xl:pt-48 4xl:pt-56">
-      {/* Background Interactive Network */}
-      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
+    <div 
+      ref={containerRef} 
+      className="relative min-h-screen bg-[#0B0B0F] text-white flex flex-col justify-between overflow-x-hidden font-body selection:bg-purple-500/30 selection:text-purple-200 pt-24 lg:pt-28 2xl:pt-32"
+    >
+      {/* Background Top & Side Purple Atmospheric Glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90vw] max-w-[1000px] h-[500px] bg-gradient-to-b from-purple-900/25 via-indigo-950/15 to-transparent blur-[120px] pointer-events-none z-0" />
+      <div className="absolute top-20 left-1/4 w-[40vw] max-w-[350px] h-[350px] bg-purple-600/10 blur-[100px] pointer-events-none z-0" />
+      <div className="absolute top-20 right-1/4 w-[40vw] max-w-[350px] h-[350px] bg-indigo-600/10 blur-[100px] pointer-events-none z-0" />
 
-      {/* Navigation Header - Clean Logo Only Navbar */}
+      {/* ========================================================================= */}
+      {/* HUBBL NAVBAR (Logo Left)                                                  */}
+      {/* ========================================================================= */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b anim-header ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b h-16 lg:h-18 xl:h-20 2xl:h-24 flex items-center anim-header ${
           scrolled
-            ? 'bg-zinc-950/85 backdrop-blur-xl border-white/10 shadow-lg shadow-black/20 py-3.5 2xl:py-5 3xl:py-6'
-            : 'bg-black/40 backdrop-blur-md border-white/5 py-5 2xl:py-7 3xl:py-8'
+            ? "bg-[#0B0B0F]/95 backdrop-blur-2xl border-white/15 shadow-xl shadow-black/40"
+            : "bg-[#0B0B0F]/90 backdrop-blur-xl border-white/10 shadow-lg shadow-black/20"
         }`}
       >
-        <div className="w-full max-w-[1920px] 3xl:max-w-[2400px] mx-auto px-4 md:px-8 xl:px-16 2xl:px-24 flex items-center justify-between relative">
-          {/* Matched Hubbl Brand Logo */}
+        <div className="w-full max-w-[1920px] 3xl:max-w-[2400px] mx-auto px-4 md:px-8 xl:px-16 2xl:px-24 flex items-center justify-between h-full relative">
+          
+          {/* Brand Logo */}
           <a
             href="/"
-            className="flex items-center gap-2.5 2xl:gap-4 z-50 cursor-pointer hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-300 shrink-0"
+            className="flex items-center gap-2.5 z-50 cursor-pointer hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-300 shrink-0"
             aria-label="Hubbl Home"
           >
             <img
               src="/logos/new_hubbl_logo.png"
               alt="Hubbl Logo"
-              className="h-10 sm:h-11 md:h-12 2xl:h-16 3xl:h-20 4xl:h-24 w-auto object-contain shrink-0"
+              decoding="async"
+              loading="eager"
+              className="h-9 sm:h-10 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain shrink-0"
             />
-            <span className="font-heading text-2xl 2xl:text-4xl 3xl:text-5xl 4xl:text-6xl font-bold text-white tracking-wide mt-1">
+            <span className="font-heading text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-white tracking-wide mt-0.5">
               Hub<span className="text-violet-500">bl</span>
             </span>
           </a>
+
         </div>
       </nav>
 
-      {/* Hero Content - Fully Responsive for Mobile, Tablet, Desktop, & 20"+ Displays */}
-      <main className="flex-1 relative z-10 flex flex-col items-center justify-center text-center px-4 py-8 md:py-16 2xl:py-24 3xl:py-32 max-w-5xl 2xl:max-w-7xl 3xl:max-w-[1600px] 4xl:max-w-[2000px] mx-auto w-full">
-        {/* Independence Day / Launch Badge */}
-        <div className="anim-badge inline-flex items-center gap-2 2xl:gap-3 bg-gradient-to-r from-orange-500/10 via-white/5 to-green-500/10 border border-white/10 rounded-full px-4 py-1.5 2xl:px-7 2xl:py-3 3xl:px-9 3xl:py-4 mb-6 2xl:mb-10 3xl:mb-12 shadow-xl backdrop-blur-md">
-          <Sparkles className="w-4 h-4 2xl:w-6 2xl:h-6 3xl:w-8 3xl:h-8 text-orange-400 animate-pulse" />
-          <span className="text-xs 2xl:text-lg 3xl:text-2xl 4xl:text-3xl font-mono font-semibold tracking-wider uppercase text-gray-200">
-            Launching August 15 <span className="text-orange-400 font-bold">Midnight</span> IST
-          </span>
+      {/* ========================================================================= */}
+      {/* LAUNCH TIMER HERO SECTION                                                 */}
+      {/* ========================================================================= */}
+      <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center px-3 sm:px-6 lg:px-8 flex-1">
+
+        {/* Launching Soon Pill Badge */}
+        <div className="anim-badge mb-6 sm:mb-8 mt-4 sm:mt-6">
+          <div className="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 sm:px-5 py-1 sm:py-1.5 rounded-full border border-purple-500/40 bg-purple-950/25 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.15)]">
+            <span className="text-purple-300 text-[10px] sm:text-xs md:text-sm font-medium tracking-widest uppercase whitespace-nowrap">
+              • &nbsp; WE'RE LAUNCHING SOON &nbsp; •
+            </span>
+          </div>
         </div>
 
-        {/* Hero Title */}
-        <h1 className="anim-title text-4xl sm:text-6xl md:text-7xl 2xl:text-8xl 3xl:text-[105px] 4xl:text-[130px] font-bold tracking-tight mb-6 2xl:mb-10 3xl:mb-12 max-w-4xl 2xl:max-w-6xl 3xl:max-w-7xl font-heading leading-tight">
-          Building India's Future, <br className="hidden md:inline" />
-          <span className="text-gradient font-black">Together.</span>
+        {/* Main Heading */}
+        <h1 className="anim-title text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6 font-heading">
+          Something{' '}
+          <span className="bg-gradient-to-r from-purple-400 via-purple-300 to-indigo-200 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(168,85,247,0.4)]">
+            Great
+          </span>
+          <br />
+          is Coming
         </h1>
 
+        {/* Purple Glowing Dot Divider */}
+        <div className="anim-dot w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-purple-400 shadow-[0_0_12px_#c084fc] mb-4 sm:mb-6" />
+
         {/* Subtitle */}
-        <p className="anim-desc text-sm md:text-lg 2xl:text-2xl 3xl:text-3xl 4xl:text-4xl text-gray-400 max-w-2xl 2xl:max-w-4xl 3xl:max-w-5xl font-body mb-10 2xl:mb-16 3xl:mb-20 leading-relaxed">
-          The ultimate ecosystem connecting developer communities, events, and resources. 
-          Launching officially on India's Independence Day. Stay tuned!
+        <p className="anim-subtitle text-gray-300/90 text-xs sm:text-base md:text-lg max-w-xs sm:max-w-lg mb-8 sm:mb-12 leading-relaxed font-light px-2">
+          Connecting communities, speakers <br className="hidden sm:inline" />
+          and attendees across <span className="text-purple-400 font-normal">India's</span> tech ecosystem.
         </p>
 
-        {/* Countdown Timer / Launched State */}
-        {isLaunched ? (
-          <div className="anim-card w-full max-w-3xl 2xl:max-w-5xl 3xl:max-w-6xl mb-12 2xl:mb-16 py-10 2xl:py-16 px-6 2xl:px-12 glass rounded-2xl 2xl:rounded-3xl relative overflow-hidden flex flex-col items-center justify-center border border-green-500/20 shadow-[0_0_50px_rgba(19,136,8,0.15)] z-10">
-            <div className="absolute top-0 left-0 w-full h-[3px] 2xl:h-[5px] bg-gradient-to-r from-orange-500 via-white to-green-500" />
-            <h2 className="text-3xl md:text-5xl 2xl:text-7xl 3xl:text-8xl font-black font-heading mb-4 2xl:mb-8 text-gradient tracking-wide">
-              WE ARE LIVE!
-            </h2>
-            <p className="text-sm md:text-base 2xl:text-2xl 3xl:text-3xl text-gray-300 font-body mb-8 2xl:mb-12 max-w-lg 2xl:max-w-2xl">
-              Hubbl is officially live and open to all tech communities. Discover meetups, connect with speakers, and build the future of India's tech ecosystem.
-            </p>
-            <a 
-              href="https://hubbl.in" 
-              target="_blank" 
-              rel="noreferrer"
-              className="bg-gradient-to-r from-fractal-purple to-fractal-orange hover:from-fractal-purple/95 hover:to-fractal-orange/95 px-8 2xl:px-12 py-4 2xl:py-6 rounded-xl 2xl:rounded-2xl font-heading font-semibold text-base 2xl:text-2xl 3xl:text-3xl tracking-wider flex items-center gap-2 2xl:gap-4 transition-all hover:shadow-[0_0_30px_rgba(110,43,136,0.5)] hover:scale-[1.02]"
-            >
-              <span>Explore Hubbl</span>
-              <ArrowRight className="w-5 h-5 2xl:w-8 2xl:h-8" />
-            </a>
-          </div>
-        ) : (
-          <div className="anim-card grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 2xl:gap-8 3xl:gap-12 w-full max-w-3xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w-7xl mb-8 2xl:mb-12 3xl:mb-16 glow-container">
-            {[
-              { label: 'DAYS', value: timeLeft.days },
-              { label: 'HOURS', value: timeLeft.hours },
-              { label: 'MINUTES', value: timeLeft.minutes },
-              { label: 'SECONDS', value: timeLeft.seconds }
-            ].map((item, index) => (
-              <div 
-                key={index}
-                className="glass glass-hover rounded-2xl 2xl:rounded-3xl p-6 md:p-8 2xl:p-12 3xl:p-16 flex flex-col items-center justify-center relative overflow-hidden group"
-              >
-                {/* Card top gradient indicator */}
-                <div className="absolute top-0 left-0 w-full h-[3px] 2xl:h-[5px] bg-gradient-to-r from-fractal-purple to-fractal-orange opacity-60" />
-                
-                <span className="text-4xl md:text-6xl 2xl:text-8xl 3xl:text-[100px] 4xl:text-[120px] font-black font-mono-data tracking-tight mb-2 2xl:mb-4 text-white group-hover:scale-105 transition-transform duration-300">
-                  {formatNumber(item.value)}
+        {/* Countdown Box */}
+        <div className="anim-card w-full max-w-xl mb-6 sm:mb-8">
+          <div className="relative rounded-xl sm:rounded-3xl bg-[#0b0718]/90 border border-purple-500/30 p-4 sm:p-8 backdrop-blur-xl shadow-[0_0_50px_rgba(147,51,234,0.18)]">
+            <div className="flex items-center justify-between px-1 sm:px-6">
+              
+              {/* DAYS */}
+              <div className="flex flex-col items-center flex-1">
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                  {formatNumber(timeLeft.days)}
                 </span>
-                <span className="text-[10px] md:text-xs 2xl:text-base 3xl:text-xl 4xl:text-2xl font-mono tracking-widest text-gray-400 uppercase font-semibold">
-                  {item.label}
+                <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
+                  DAYS
                 </span>
               </div>
-            ))}
-          </div>
-        )}
 
-        {/* Social Media Dock - Placed directly below the timer */}
-        <div className="anim-socials mb-16 2xl:mb-24 3xl:mb-28 flex flex-col items-center gap-3 2xl:gap-5 3xl:gap-6">
-          <span className="text-xs sm:text-sm 2xl:text-lg 3xl:text-xl font-mono uppercase tracking-widest text-gray-400 font-semibold">
-            Connect With Us
-          </span>
-          <div className="flex items-center gap-4 sm:gap-6 2xl:gap-8 3xl:gap-10">
-            {/* LinkedIn */}
-            <a
-              href="https://www.linkedin.com/company/hubblcommunity"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Hubbl on LinkedIn"
-              className="group relative p-3.5 sm:p-4 2xl:p-6 3xl:p-8 rounded-2xl 2xl:rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/15 hover:shadow-[0_0_30px_rgba(10,102,194,0.45)] hover:scale-105"
-            >
-              <Linkedin className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-9 2xl:h-9 3xl:w-11 3xl:h-11 text-zinc-400 group-hover:text-[#0A66C2] group-hover:scale-110 transition-all duration-500 ease-in-out" />
-            </a>
+              {/* Dot Separator */}
+              <span className="text-purple-400/80 text-base sm:text-2xl font-bold select-none pb-4 sm:pb-5">•</span>
 
-            {/* X (Formerly Twitter) */}
-            <a
-              href="https://x.com/hubblcommunity"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Hubbl on X"
-              className="group relative p-3.5 sm:p-4 2xl:p-6 3xl:p-8 rounded-2xl 2xl:rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-white/50 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(255,255,255,0.35)] hover:scale-105"
-            >
-              <XIcon className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-9 2xl:h-9 3xl:w-11 3xl:h-11 text-zinc-400 group-hover:text-white group-hover:scale-110 transition-all duration-500 ease-in-out" />
-            </a>
-
-            {/* Instagram */}
-            <a
-              href="https://instagram.com/hubblcommunity"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Hubbl on Instagram"
-              className="group relative p-3.5 sm:p-4 2xl:p-6 3xl:p-8 rounded-2xl 2xl:rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-pink-500/60 hover:bg-gradient-to-tr hover:from-[#f09433]/20 hover:via-[#dc2743]/20 hover:to-[#bc1888]/20 hover:shadow-[0_0_30px_rgba(225,48,108,0.45)] hover:scale-105"
-            >
-              <Instagram className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-9 2xl:h-9 3xl:w-11 3xl:h-11 text-zinc-400 group-hover:text-[#E1306C] group-hover:scale-110 transition-all duration-500 ease-in-out" />
-            </a>
-          </div>
-        </div>
-
-        {/* Feature Teasers */}
-        <div className="anim-features w-full max-w-4xl 2xl:max-w-6xl 3xl:max-w-7xl border-t border-white/5 pt-16 2xl:pt-24 3xl:pt-28">
-          <h2 className="text-xl md:text-2xl 2xl:text-4xl 3xl:text-5xl font-bold tracking-tight mb-8 2xl:mb-14 3xl:mb-16 font-heading">
-            What is coming to <span className="text-gradient">Hubbl</span>?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 2xl:gap-10 3xl:gap-12 text-left">
-            {[
-              {
-                icon: <Users className="w-6 h-6 2xl:w-10 2xl:h-10 3xl:w-12 3xl:h-12 text-orange-400" />,
-                title: "Unified Communities",
-                desc: "Discover AWS, Tableau, Databricks, and Fabric groups unified under one portal."
-              },
-              {
-                icon: <Calendar className="w-6 h-6 2xl:w-10 2xl:h-10 3xl:w-12 3xl:h-12 text-purple-400" />,
-                title: "Interactive Events",
-                desc: "Never miss meetups, webinars, or summits with our multi-toggle custom schedules."
-              },
-              {
-                icon: <Mic className="w-6 h-6 2xl:w-10 2xl:h-10 3xl:w-12 3xl:h-12 text-blue-400" />,
-                title: "Speaker Directory",
-                desc: "Find speakers or showcase your own voice with premium profiles."
-              }
-            ].map((feature, index) => (
-              <div key={index} className="glass p-6 2xl:p-10 3xl:p-12 rounded-2xl 2xl:rounded-3xl border border-white/5 hover:border-white/10 transition-all">
-                <div className="bg-white/5 w-12 h-12 2xl:w-16 2xl:h-16 3xl:w-20 3xl:h-20 rounded-xl 2xl:rounded-2xl flex items-center justify-center mb-4 2xl:mb-6">
-                  {feature.icon}
-                </div>
-                <h3 className="font-heading font-semibold text-base 2xl:text-2xl 3xl:text-3xl text-white mb-2 2xl:mb-4">{feature.title}</h3>
-                <p className="font-body text-xs 2xl:text-base 3xl:text-xl text-gray-400 leading-relaxed">{feature.desc}</p>
+              {/* HOURS */}
+              <div className="flex flex-col items-center flex-1">
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                  {formatNumber(timeLeft.hours)}
+                </span>
+                <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
+                  HOURS
+                </span>
               </div>
-            ))}
+
+              {/* Dot Separator */}
+              <span className="text-purple-400/80 text-base sm:text-2xl font-bold select-none pb-4 sm:pb-5">•</span>
+
+              {/* MINUTES */}
+              <div className="flex flex-col items-center flex-1">
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                  {formatNumber(timeLeft.minutes)}
+                </span>
+                <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
+                  MINUTES
+                </span>
+              </div>
+
+              {/* Dot Separator */}
+              <span className="text-purple-400/80 text-base sm:text-2xl font-bold select-none pb-4 sm:pb-5">•</span>
+
+              {/* SECONDS */}
+              <div className="flex flex-col items-center flex-1">
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                  {formatNumber(timeLeft.seconds)}
+                </span>
+                <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
+                  SECONDS
+                </span>
+              </div>
+
+            </div>
           </div>
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 py-8 2xl:py-12 3xl:py-16 mt-16 2xl:mt-28 3xl:mt-32 max-w-7xl 2xl:max-w-[1700px] 3xl:max-w-[2200px] mx-auto px-6 2xl:px-16 w-full flex flex-col sm:flex-row items-center justify-between text-xs 2xl:text-base 3xl:text-xl text-gray-500 font-body gap-4">
-        <div>
-          © {new Date().getFullYear()} Hubbl. India's Future of Community.
+        {/* Tagline Pill (Made for India. Built in India.) */}
+        <div className="anim-tagline mb-8 sm:mb-10 px-2">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full border border-purple-500/20 bg-[#0c081a]/70 backdrop-blur-md shadow-md text-[11px] sm:text-sm font-medium flex-wrap justify-center">
+            <span className="text-orange-500 text-xs sm:text-base leading-none">•</span>
+            <span className="text-gray-300">Made for <span className="text-orange-400 font-semibold">India.</span></span>
+            <span className="text-emerald-500 text-xs sm:text-base leading-none ml-1 sm:ml-2">Built in <span className="text-emerald-400 font-semibold">India.</span></span>
+            <span className="text-emerald-500 text-xs sm:text-base leading-none">•</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2 2xl:gap-3">
-          <span>Made with</span>
-          <Heart size={12} className="text-red-500 fill-red-500 animate-pulse 2xl:w-5 2xl:h-5 3xl:w-6 3xl:h-6" />
-          <span>for communities in India</span>
+
+        {/* Heart Divider */}
+        <div className="anim-divider w-full max-w-[200px] sm:max-w-xs mx-auto flex items-center justify-center gap-3 mb-8 sm:mb-12">
+          <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+          <Heart className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-purple-400/80 stroke-[1.5]" />
+          <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+        </div>
+
+        {/* 3 Pillars / Feature Columns */}
+        <div className="anim-features grid grid-cols-3 gap-2 sm:gap-8 w-full max-w-lg mx-auto mb-12 sm:mb-16">
+          
+          {/* Pillar 1: Communities */}
+          <div className="flex flex-col items-center group cursor-pointer">
+            <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center mb-2 sm:mb-3 shadow-[0_0_20px_rgba(249,115,22,0.15)] group-hover:scale-105 group-hover:border-orange-400 transition-all duration-300">
+              <Users className="w-5 h-5 sm:w-7 sm:h-7 text-orange-400 stroke-[1.5]" />
+            </div>
+            <span className="text-[11px] sm:text-sm font-medium text-gray-200">Communities</span>
+          </div>
+
+          {/* Pillar 2: Speakers */}
+          <div className="flex flex-col items-center group cursor-pointer relative">
+            <div className="absolute -left-1 sm:-left-4 top-2 bottom-2 w-[1px] bg-purple-500/15" />
+            <div className="absolute -right-1 sm:-right-4 top-2 bottom-2 w-[1px] bg-purple-500/15" />
+            
+            <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-full border border-purple-500/50 bg-purple-500/10 flex items-center justify-center mb-2 sm:mb-3 shadow-[0_0_20px_rgba(168,85,247,0.15)] group-hover:scale-105 group-hover:border-purple-400 transition-all duration-300">
+              <Mic className="w-5 h-5 sm:w-7 sm:h-7 text-purple-400 stroke-[1.5]" />
+            </div>
+            <span className="text-[11px] sm:text-sm font-medium text-gray-200">Speakers</span>
+          </div>
+
+          {/* Pillar 3: Attendees */}
+          <div className="flex flex-col items-center group cursor-pointer">
+            <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-full border border-emerald-500/50 bg-emerald-500/10 flex items-center justify-center mb-2 sm:mb-3 shadow-[0_0_20px_rgba(34,197,94,0.15)] group-hover:scale-105 group-hover:border-emerald-400 transition-all duration-300">
+              <User className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400 stroke-[1.5]" />
+            </div>
+            <span className="text-[11px] sm:text-sm font-medium text-gray-200">Attendees</span>
+          </div>
+
+        </div>
+
+        {/* Curved Glowing Horizon Planet Line */}
+        <div className="anim-arc w-full max-w-4xl relative h-12 sm:h-20 overflow-hidden flex items-center justify-center">
+          <svg 
+            className="w-full h-full text-purple-500/40 overflow-visible"
+            viewBox="0 0 1000 100" 
+            fill="none" 
+            preserveAspectRatio="none"
+          >
+            <path 
+              d="M 0,90 Q 500,-30 1000,90" 
+              stroke="url(#purpleGlowGradient)" 
+              strokeWidth="2"
+              fill="none"
+              filter="url(#glow)"
+            />
+            <defs>
+              <linearGradient id="purpleGlowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#7e22ce" stopOpacity="0.2" />
+                <stop offset="30%" stopColor="#a855f7" stopOpacity="0.8" />
+                <stop offset="50%" stopColor="#c084fc" stopOpacity="1" />
+                <stop offset="70%" stopColor="#a855f7" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#7e22ce" stopOpacity="0.2" />
+              </linearGradient>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+          </svg>
+        </div>
+
+        {/* Callout */}
+        <div className="anim-callout flex flex-col items-center gap-4 sm:gap-6 pb-6 pt-1 z-10">
+          <p className="text-gray-300 text-xs sm:text-base font-light">
+            Let's build the <span className="bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent font-medium">future</span> together.{' '}
+            <span className="text-purple-400 inline-block ml-0.5">♡</span>
+          </p>
+        </div>
+
+      </div>
+
+      {/* ========================================================================= */}
+      {/* CLEAN FOOTER BAR WITH SOCIAL MEDIA DOCK                                  */}
+      {/* ========================================================================= */}
+      <footer className="relative z-10 bg-[#0B0B0F]/80 backdrop-blur-md border-t border-white/10 anim-footer">
+        <div className="w-full max-w-[1920px] 3xl:max-w-[2400px] mx-auto px-6 md:px-12 xl:px-24 py-6 md:py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs md:text-sm text-white/40">
+          <p>© {new Date().getFullYear()} Hubbl. All rights reserved.</p>
+          
+          <SocialMediaDock />
+
+          <p className="flex items-center gap-1.5 text-white/30 text-xs md:text-sm">
+            Made with{" "}
+            <Heart
+              size={12}
+              className="text-fractal-orange fill-fractal-orange"
+            />{" "}
+            in India
+          </p>
         </div>
       </footer>
+
     </div>
   );
 }
