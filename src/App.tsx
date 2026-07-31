@@ -168,23 +168,14 @@ function App() {
       {/* ========================================================================= */}
       <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center px-3 sm:px-6 lg:px-8 flex-1">
 
-        {/* Launching Soon Pill Badge */}
-        <div className="anim-badge mb-6 sm:mb-8 mt-4 sm:mt-6">
-          <div className="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 sm:px-5 py-1 sm:py-1.5 rounded-full border border-purple-500/40 bg-purple-950/25 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.15)]">
-            <span className="text-purple-300 text-[10px] sm:text-xs md:text-sm font-medium tracking-widest uppercase whitespace-nowrap">
-              • &nbsp; WE'RE LAUNCHING SOON &nbsp; •
-            </span>
-          </div>
-        </div>
-
         {/* Main Heading */}
-        <h1 className="anim-title text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6 font-heading">
-          Something{' '}
+        <h1 className="anim-title text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6 mt-4 sm:mt-8 font-heading">
+          Building India's Tech{' '}
           <span className="bg-gradient-to-r from-purple-400 via-purple-300 to-indigo-200 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(168,85,247,0.4)]">
-            Great
+            Future
           </span>
           <br />
-          is Coming
+          Together.
         </h1>
 
         {/* Purple Glowing Dot Divider */}
