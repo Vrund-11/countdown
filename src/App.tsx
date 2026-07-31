@@ -4,25 +4,12 @@ import {
   Mic, 
   User, 
   Linkedin, 
-  Instagram, 
   Mail,
   Heart
 } from 'lucide-react';
 import gsap from 'gsap';
 
-// Twitter / X Icon from Hubbl SocialMediaDock
-const XIcon = ({ className }: { className?: string }) => (
-  <svg
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-    fill="currentColor"
-    className={className || "w-5 h-5"}
-  >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
-// Exact Social Media Dock Component from Hubbl Repo
+// Social Media Dock - LinkedIn + Email only
 const SocialMediaDock = () => (
   <div className="flex items-center gap-3 sm:gap-4">
     {/* LinkedIn */}
@@ -36,28 +23,6 @@ const SocialMediaDock = () => (
       <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-[#0A66C2] group-hover:scale-110 transition-all duration-500 ease-in-out" />
     </a>
 
-    {/* X (Formerly Twitter) */}
-    <a
-      href="https://x.com/hubblcommunity"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Hubbl on X"
-      className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-white/50 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(255,255,255,0.25)]"
-    >
-      <XIcon className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-white group-hover:scale-110 transition-all duration-500 ease-in-out" />
-    </a>
-
-    {/* Instagram */}
-    <a
-      href="https://instagram.com/hubblcommunity"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Hubbl on Instagram"
-      className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-pink-500/60 hover:bg-gradient-to-tr hover:from-[#f09433]/20 hover:via-[#dc2743]/20 hover:to-[#bc1888]/20 hover:shadow-[0_0_20px_rgba(225,48,108,0.35)]"
-    >
-      <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-[#E1306C] group-hover:scale-110 transition-all duration-500 ease-in-out" />
-    </a>
-
     {/* Email info@Hubbl.in */}
     <a
       href="mailto:info@Hubbl.in"
@@ -69,9 +34,42 @@ const SocialMediaDock = () => (
   </div>
 );
 
+// Vertical Sliding Digit Column for smooth After Effects style countdown reel
+const DigitColumn = ({ digit }: { digit: string }) => {
+  const num = parseInt(digit, 10);
+  const safeNum = isNaN(num) ? 0 : num;
+
+  return (
+    <div className="relative h-[1.15em] overflow-hidden inline-block text-center w-[0.62em] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
+      <div
+        className="transition-transform duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] flex flex-col items-center select-none"
+        style={{ transform: `translateY(-${safeNum * 10}%)` }}
+      >
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+          <span key={n} className="h-[1.15em] flex items-center justify-center leading-none font-mono tabular-nums">
+            {n}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SlidingNumber = ({ value }: { value: number }) => {
+  const str = value.toString().padStart(2, '0');
+  const digits = str.split('');
+
+  return (
+    <div className="flex items-center justify-center">
+      {digits.map((d, idx) => (
+        <DigitColumn key={idx} digit={d} />
+      ))}
+    </div>
+  );
+};
+
 function App() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
 
   // Target Launch Date: August 15, 2026 Midnight IST (00:00:00 GMT+5:30)
   const targetDate = useRef(new Date('2026-08-15T00:00:00+05:30').getTime()).current;
@@ -101,15 +99,6 @@ function App() {
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  // Scroll listener for Navbar
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Instant non-blocking entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -126,10 +115,6 @@ function App() {
     return () => ctx.revert();
   }, []);
 
-  const formatNumber = (num: number) => {
-    return num.toString().padStart(2, '0');
-  };
-
   return (
     <div 
       ref={containerRef} 
@@ -137,37 +122,26 @@ function App() {
     >
 
       {/* ========================================================================= */}
-      {/* HUBBL NAVBAR (Logo Left)                                                  */}
+      {/* FLOATING BRAND LOGO (Top-Left, Navbar Background Removed)                */}
       {/* ========================================================================= */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b h-16 lg:h-18 xl:h-20 2xl:h-24 flex items-center anim-header ${
-          scrolled
-            ? "bg-[#0B0B0F]/95 backdrop-blur-2xl border-white/15 shadow-xl shadow-black/40"
-            : "bg-[#0B0B0F]/90 backdrop-blur-xl border-white/10 shadow-lg shadow-black/20"
-        }`}
-      >
-        <div className="w-full max-w-[1920px] 3xl:max-w-[2400px] mx-auto px-4 md:px-8 xl:px-16 2xl:px-24 flex items-center justify-between h-full relative">
-          
-          {/* Brand Logo */}
-          <a
-            href="/"
-            className="flex items-center gap-2.5 z-50 cursor-pointer hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-300 shrink-0"
-            aria-label="Hubbl Home"
-          >
-            <img
-              src="/logos/new_hubbl_logo.png"
-              alt="Hubbl Logo"
-              decoding="async"
-              loading="eager"
-              className="h-9 sm:h-10 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain shrink-0"
-            />
-            <span className="font-heading text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-white tracking-wide mt-0.5">
-              Hub<span className="text-violet-500">bl</span>
-            </span>
-          </a>
-
-        </div>
-      </nav>
+      <header className="fixed top-6 left-6 sm:left-10 lg:left-12 z-50 anim-header">
+        <a
+          href="/"
+          className="flex items-center gap-2.5 cursor-pointer hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-300"
+          aria-label="Hubbl Home"
+        >
+          <img
+            src="/logos/new_hubbl_logo.png"
+            alt="Hubbl Logo"
+            decoding="async"
+            loading="eager"
+            className="h-9 sm:h-10 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain shrink-0"
+          />
+          <span className="font-heading text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-white tracking-wide mt-0.5">
+            Hub<span className="text-violet-500">bl</span>
+          </span>
+        </a>
+      </header>
 
       {/* ========================================================================= */}
       {/* LAUNCH TIMER HERO SECTION                                                 */}
@@ -193,15 +167,18 @@ function App() {
           and attendees across <span className="text-purple-400 font-normal">India's</span> tech ecosystem.
         </p>
 
-        {/* Countdown Box */}
-        <div className="anim-card w-full max-w-xl mb-6 sm:mb-8">
-          <div className="relative rounded-xl sm:rounded-3xl bg-[#0b0718]/90 border border-purple-500/30 p-4 sm:p-8 backdrop-blur-xl shadow-[0_0_50px_rgba(147,51,234,0.18)]">
+        {/* Countdown Box with Neon Glow Ring */}
+        <div className="anim-card w-full max-w-xl mb-6 sm:mb-8 relative group">
+          {/* Animated Neon Glow Backdrop Ring */}
+          <div className="absolute -inset-1 rounded-2xl sm:rounded-[32px] bg-gradient-to-r from-purple-600/40 via-indigo-500/30 to-purple-600/40 blur-xl opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse" />
+
+          <div className="relative rounded-xl sm:rounded-3xl bg-[#0b0718]/90 border border-purple-500/40 p-4 sm:p-8 backdrop-blur-xl shadow-[0_0_60px_rgba(147,51,234,0.25)]">
             <div className="flex items-center justify-between px-1 sm:px-6">
               
               {/* DAYS */}
               <div className="flex flex-col items-center flex-1">
-                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-                  {formatNumber(timeLeft.days)}
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                  <SlidingNumber value={timeLeft.days} />
                 </span>
                 <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
                   DAYS
@@ -213,8 +190,8 @@ function App() {
 
               {/* HOURS */}
               <div className="flex flex-col items-center flex-1">
-                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-                  {formatNumber(timeLeft.hours)}
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                  <SlidingNumber value={timeLeft.hours} />
                 </span>
                 <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
                   HOURS
@@ -226,8 +203,8 @@ function App() {
 
               {/* MINUTES */}
               <div className="flex flex-col items-center flex-1">
-                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-                  {formatNumber(timeLeft.minutes)}
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                  <SlidingNumber value={timeLeft.minutes} />
                 </span>
                 <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
                   MINUTES
@@ -239,8 +216,8 @@ function App() {
 
               {/* SECONDS */}
               <div className="flex flex-col items-center flex-1">
-                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-                  {formatNumber(timeLeft.seconds)}
+                <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                  <SlidingNumber value={timeLeft.seconds} />
                 </span>
                 <span className="text-[8px] sm:text-xs font-semibold tracking-wider text-purple-200/50 uppercase mt-1 sm:mt-2">
                   SECONDS
@@ -259,12 +236,14 @@ function App() {
           <SocialMediaDock />
         </div>
 
-        {/* Tagline Pill (Made for India. Built in India.) */}
+        {/* Tagline Pill (Made in Bharat. Built in Bharat.) */}
         <div className="anim-tagline mb-8 sm:mb-10 px-2">
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full border border-purple-500/20 bg-[#0c081a]/70 backdrop-blur-md shadow-md text-[11px] sm:text-sm font-medium flex-wrap justify-center">
             <span className="text-orange-500 text-xs sm:text-base leading-none">•</span>
-            <span className="text-gray-300">Made for <span className="text-orange-400 font-semibold">India.</span></span>
-            <span className="text-emerald-500 text-xs sm:text-base leading-none ml-1 sm:ml-2">Built in <span className="text-emerald-400 font-semibold">India.</span></span>
+            <span className="text-orange-400 font-semibold">Made in </span>
+            <span className="text-white font-semibold">Bharat.</span>
+            <span className="text-white font-medium ml-1 sm:ml-2">Built </span>
+            <span className="text-emerald-400 font-semibold">in Bharat.</span>
             <span className="text-emerald-500 text-xs sm:text-base leading-none">•</span>
           </div>
         </div>
@@ -369,9 +348,9 @@ function App() {
             Made with{" "}
             <Heart
               size={12}
-              className="text-fractal-orange fill-fractal-orange"
+              className="text-orange-500 fill-orange-500"
             />{" "}
-            in India
+            in Bharat
           </p>
         </div>
       </footer>
