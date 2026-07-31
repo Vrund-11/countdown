@@ -254,6 +254,14 @@ function App() {
           </div>
         </div>
 
+        {/* Social Media Links Dock - Positioned Directly Below Timings */}
+        <div className="anim-socials mb-8 sm:mb-10 flex flex-col items-center gap-2.5">
+          <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-purple-300/70 font-semibold">
+            Connect With Us
+          </span>
+          <SocialMediaDock />
+        </div>
+
         {/* Tagline Pill (Made for India. Built in India.) */}
         <div className="anim-tagline mb-8 sm:mb-10 px-2">
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full border border-purple-500/20 bg-[#0c081a]/70 backdrop-blur-md shadow-md text-[11px] sm:text-sm font-medium flex-wrap justify-center">
@@ -348,13 +356,11 @@ function App() {
       </div>
 
       {/* ========================================================================= */}
-      {/* CLEAN FOOTER BAR WITH SOCIAL MEDIA DOCK                                  */}
+      {/* CLEAN FOOTER BAR                                                          */}
       {/* ========================================================================= */}
       <footer className="relative z-10 bg-[#0B0B0F]/80 backdrop-blur-md border-t border-white/10 anim-footer">
         <div className="w-full max-w-[1920px] 3xl:max-w-[2400px] mx-auto px-6 md:px-12 xl:px-24 py-6 md:py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs md:text-sm text-white/40">
           <p>© {new Date().getFullYear()} Hubbl. All rights reserved.</p>
-          
-          <SocialMediaDock />
 
           <p className="flex items-center gap-1.5 text-white/30 text-xs md:text-sm">
             Made with{" "}
