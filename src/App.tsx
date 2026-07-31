@@ -133,11 +133,8 @@ function App() {
   return (
     <div 
       ref={containerRef} 
-      className="relative min-h-screen bg-[#0B0B0F] text-white flex flex-col justify-between overflow-x-hidden font-body selection:bg-purple-500/30 selection:text-purple-200 pt-24 lg:pt-28 2xl:pt-32"
+      className="relative min-h-screen bg-transparent text-white flex flex-col justify-between overflow-x-hidden font-body selection:bg-purple-500/30 selection:text-purple-200 pt-24 lg:pt-28 2xl:pt-32"
     >
-      {/* Background Saffron (Left) & Emerald (Right) Ambient Glows */}
-      <div className="fixed top-0 left-0 w-[60vw] max-w-[850px] h-[60vw] max-h-[850px] bg-gradient-to-br from-orange-500/22 via-amber-600/10 to-transparent rounded-full blur-[140px] pointer-events-none z-0 -translate-x-1/3 -translate-y-1/3" />
-      <div className="fixed top-1/4 right-0 w-[55vw] max-w-[800px] h-[55vw] max-h-[800px] bg-gradient-to-bl from-emerald-500/18 via-green-700/08 to-transparent rounded-full blur-[140px] pointer-events-none z-0 translate-x-1/3" />
 
       {/* ========================================================================= */}
       {/* HUBBL NAVBAR (Logo Left)                                                  */}
