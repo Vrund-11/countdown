@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { 
-  Users, 
-  Mic, 
-  User, 
-  Linkedin, 
+import {
+  Users,
+  Mic,
+  User,
+  Linkedin,
   Mail,
   Heart
 } from 'lucide-react';
@@ -116,8 +116,8 @@ function App() {
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="relative min-h-screen bg-transparent text-white flex flex-col justify-between overflow-x-hidden font-body selection:bg-purple-500/30 selection:text-purple-200 pt-24 lg:pt-28 2xl:pt-32"
     >
 
@@ -174,7 +174,7 @@ function App() {
 
           <div className="relative rounded-xl sm:rounded-3xl bg-[#0b0718]/90 border border-purple-500/40 p-4 sm:p-8 backdrop-blur-xl shadow-[0_0_60px_rgba(147,51,234,0.25)]">
             <div className="flex items-center justify-between px-1 sm:px-6">
-              
+
               {/* DAYS */}
               <div className="flex flex-col items-center flex-1">
                 <span className="text-2xl sm:text-5xl md:text-6xl font-bold text-purple-400 font-heading tracking-tight drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
@@ -240,7 +240,7 @@ function App() {
         <div className="anim-tagline mb-8 sm:mb-10 px-2">
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full border border-purple-500/20 bg-[#0c081a]/70 backdrop-blur-md shadow-md text-[11px] sm:text-sm font-medium flex-wrap justify-center">
             <span className="text-orange-500 text-xs sm:text-base leading-none">•</span>
-            <span className="text-orange-400 font-semibold">Made in </span>
+            <span className="text-orange-400 font-semibold">Made for</span>
             <span className="text-white font-semibold">Bharat.</span>
             <span className="text-white font-medium ml-1 sm:ml-2">Built </span>
             <span className="text-emerald-400 font-semibold">in Bharat.</span>
@@ -257,7 +257,7 @@ function App() {
 
         {/* 3 Pillars / Feature Columns */}
         <div className="anim-features grid grid-cols-3 gap-2 sm:gap-8 w-full max-w-lg mx-auto mb-12 sm:mb-16">
-          
+
           {/* Pillar 1: Communities */}
           <div className="flex flex-col items-center group cursor-pointer">
             <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center mb-2 sm:mb-3 shadow-[0_0_20px_rgba(249,115,22,0.15)] group-hover:scale-105 group-hover:border-orange-400 transition-all duration-300">
@@ -270,7 +270,7 @@ function App() {
           <div className="flex flex-col items-center group cursor-pointer relative">
             <div className="absolute -left-1 sm:-left-4 top-2 bottom-2 w-[1px] bg-purple-500/15" />
             <div className="absolute -right-1 sm:-right-4 top-2 bottom-2 w-[1px] bg-purple-500/15" />
-            
+
             <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-full border border-purple-500/50 bg-purple-500/10 flex items-center justify-center mb-2 sm:mb-3 shadow-[0_0_20px_rgba(168,85,247,0.15)] group-hover:scale-105 group-hover:border-purple-400 transition-all duration-300">
               <Mic className="w-5 h-5 sm:w-7 sm:h-7 text-purple-400 stroke-[1.5]" />
             </div>
@@ -289,15 +289,15 @@ function App() {
 
         {/* Curved Glowing Horizon Planet Line */}
         <div className="anim-arc w-full max-w-4xl relative h-12 sm:h-20 overflow-hidden flex items-center justify-center">
-          <svg 
+          <svg
             className="w-full h-full text-purple-500/40 overflow-visible"
-            viewBox="0 0 1000 100" 
-            fill="none" 
+            viewBox="0 0 1000 100"
+            fill="none"
             preserveAspectRatio="none"
           >
-            <path 
-              d="M 0,90 Q 500,-30 1000,90" 
-              stroke="url(#purpleGlowGradient)" 
+            <path
+              d="M 0,90 Q 500,-30 1000,90"
+              stroke="url(#purpleGlowGradient)"
               strokeWidth="2"
               fill="none"
               filter="url(#glow)"
@@ -311,10 +311,10 @@ function App() {
                 <stop offset="100%" stopColor="#7e22ce" stopOpacity="0.2" />
               </linearGradient>
               <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
@@ -327,8 +327,8 @@ function App() {
             Let's build the <span className="bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent font-medium">future</span> together.{' '}
             <span className="text-purple-400 inline-block ml-0.5">♡</span>
           </p>
-          <a 
-            href="mailto:info@Hubbl.in" 
+          <a
+            href="mailto:info@Hubbl.in"
             className="text-purple-300/80 hover:text-purple-300 text-xs sm:text-sm font-mono hover:underline transition-all tracking-wide"
           >
             info@Hubbl.in
