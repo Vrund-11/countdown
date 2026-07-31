@@ -5,6 +5,7 @@ import {
   User, 
   Linkedin, 
   Instagram, 
+  Mail,
   Heart
 } from 'lucide-react';
 import gsap from 'gsap';
@@ -55,6 +56,15 @@ const SocialMediaDock = () => (
       className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-pink-500/60 hover:bg-gradient-to-tr hover:from-[#f09433]/20 hover:via-[#dc2743]/20 hover:to-[#bc1888]/20 hover:shadow-[0_0_20px_rgba(225,48,108,0.35)]"
     >
       <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-[#E1306C] group-hover:scale-110 transition-all duration-500 ease-in-out" />
+    </a>
+
+    {/* Email info@Hubbl.in */}
+    <a
+      href="mailto:info@Hubbl.in"
+      aria-label="Email Hubbl at info@Hubbl.in"
+      className="group relative p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 ease-in-out hover:border-purple-500/60 hover:bg-purple-500/15 hover:shadow-[0_0_20px_rgba(168,85,247,0.35)]"
+    >
+      <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 group-hover:text-purple-300 group-hover:scale-110 transition-all duration-500 ease-in-out" />
     </a>
   </div>
 );
@@ -337,11 +347,17 @@ function App() {
         </div>
 
         {/* Callout */}
-        <div className="anim-callout flex flex-col items-center gap-4 sm:gap-6 pb-6 pt-1 z-10">
+        <div className="anim-callout flex flex-col items-center gap-2 sm:gap-3 pb-6 pt-1 z-10">
           <p className="text-gray-300 text-xs sm:text-base font-light">
             Let's build the <span className="bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent font-medium">future</span> together.{' '}
             <span className="text-purple-400 inline-block ml-0.5">♡</span>
           </p>
+          <a 
+            href="mailto:info@Hubbl.in" 
+            className="text-purple-300/80 hover:text-purple-300 text-xs sm:text-sm font-mono hover:underline transition-all tracking-wide"
+          >
+            info@Hubbl.in
+          </a>
         </div>
 
       </div>
